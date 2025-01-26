@@ -34,8 +34,15 @@ document.addEventListener("DOMContentLoaded", function () {
     const formData = new FormData();
     formData.append("pcNumber", pcDropdown.value);
     formData.append("pdfFile", pdfInput.files[0]);
+    console.log(formData);
 
-    // Upload to S3
+    // Upload to S3:
+    // 1. Create a presigned URL from the server
+    // 2. Upload the file to the presigned URL
+    // 3. Notify the user of success or failure
+    // 4. Clear
+
+
 
     // Success message (simulate file upload)
     messageDiv.style.color = "green";
