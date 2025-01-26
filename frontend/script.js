@@ -5,7 +5,10 @@ document.addEventListener("DOMContentLoaded", function () {
   const messageDiv = document.getElementById("message");
 
   // Populate the PC dropdown dynamically
-  for (let i = 0; i <= 99; i++) {
+  const now = new Date();
+  const year = now.getFullYear();
+  const pcNumber = year % 100;
+  for (let i = pcNumber - 4; i < pcNumber; i++) {
     const option = document.createElement("option");
     option.value = i.toString().padStart(2, "0"); // Format numbers as 00, 01, etc.
     option.textContent = `PC ${i.toString().padStart(2, "0")}`;
