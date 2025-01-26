@@ -31,6 +31,12 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
 
+    const formData = new FormData();
+    formData.append("pcNumber", pcDropdown.value);
+    formData.append("pdfFile", pdfInput.files[0]);
+
+    // Upload to S3
+
     // Success message (simulate file upload)
     messageDiv.style.color = "green";
     messageDiv.textContent = `Transcript for PC ${pcDropdown.value} successfully uploaded!`;
