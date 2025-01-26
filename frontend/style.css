@@ -69,7 +69,7 @@ header {
    HERO SECTION
 ---------------------------- */
 .hero {
-  background: linear-gradient(135deg, var(--beta-blue), var(--beta-pink));
+  background: linear-gradient(1350000deg, var(--beta-blue), var(--beta-pink));
   padding: 3rem 2rem;
   text-align: center;
   color: var(--beta-dark);
@@ -82,7 +82,7 @@ header {
 }
 
 .hero-content h2 {
-  font-size: 4rem; /* Large font size for Greek symbols */
+  font-size: 5rem; /* Large font size for Greek symbols */
   font-weight: bold;
   color: var(--beta-dark);
 }
@@ -192,4 +192,12 @@ footer p {
 #pcNumber:focus {
   border-color: var(--beta-blue);
   box-shadow: 0px 0px 5px var(--beta-blue);
+}
+
+.disclaimer {
+  margin-top: 3rem;
+  font-size: 0.85rem;
+  color: var(--beta-dark);
+  opacity: 0.8;
+  text-align: center;
 }
