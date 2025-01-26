@@ -27,11 +27,17 @@ def process_text_with_ai(text):
     
     return response['choices'][0]['message']['content']
 
-def insert_to_db(placeholder1, placeholder2, db_path):
+def insert_to_db(courses, summary, db_path = DATABASE_PATH):
     pass
 
 if __name__ == '__main__':
     pdf_path = 'sample.pdf'
     text = extract_text_from_pdf(pdf_path)
-    response = process_text_with_ai(text)
-    insert_to_db(pdf_path, response, 'sample.db')
+    extracted_data = process_text_with_ai(text)
+    
+    # Sample code to insert data into database
+    import json
+    data = json.loads(extracted_data)
+    courses = data['courses']
+    summary = data['summary']
+    insert_to_db(courses, summary)

@@ -34,7 +34,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const formData = new FormData();
     formData.append("pcNumber", pcDropdown.value);
     formData.append("pdfFile", pdfInput.files[0]);
-    console.log(formData);
 
     // Upload to S3:
     // 1. Create a presigned URL from the server
