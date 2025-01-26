@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Beta Omega Transcripts</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header>
+    <nav class="navbar">
+      <div class="logo">
+        <img src="images/betathetapi-symbol.png" alt="Beta Theta Pi Symbol" />
+        <h1>Beta Omega Transcripts</h1>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-content">
+        <h2>Welcome to Beta Omega Transcripts</h2>
+        <p>The simplest way to insert your Beta Theta Pi transcripts online.</p>
+      </div>
+    </section>
+
+    <section class="upload-section">
+      <h3>Upload Your Transcript</h3>
+      <form id="uploadForm">
+        <label for="pdfFile">Choose a PDF file:</label>
+        <input type="file" id="pdfFile" name="pdfFile" accept="application/pdf" required />
+        <button type="submit">Upload</button>
+      </form>
+      <div id="message"></div>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Beta Omega Transcripts. All rights reserved.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

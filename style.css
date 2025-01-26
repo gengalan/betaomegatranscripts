@@ -1,0 +1,151 @@
+/* ---------------------------
+   RESET & GLOBAL STYLES
+---------------------------- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+/* ---------------------------
+   ROOT VARIABLES
+   (Feel free to tweak these 
+   colors to match Beta Theta Pi's 
+   pink & blue theme more precisely)
+---------------------------- */
+:root {
+  --beta-blue: #9ec4e6;   /* Light/pastel blue */
+  --beta-pink: #f4c2c2;   /* Light/pastel pink */
+  --beta-dark: #2b2b2b;
+  --beta-white: #ffffff;
+  --transition-speed: 0.3s;
+}
+
+/* ---------------------------
+   BODY
+---------------------------- */
+body {
+  background: var(--beta-white);
+  color: var(--beta-dark);
+  line-height: 1.6;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* ---------------------------
+   HEADER & NAVBAR
+---------------------------- */
+header {
+  background: var(--beta-pink);
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+}
+
+.logo img {
+  max-height: 50px;
+  margin-right: 15px;
+}
+
+.logo h1 {
+  font-size: 1.5rem;
+  color: var(--beta-dark);
+}
+
+/* ---------------------------
+   HERO SECTION
+---------------------------- */
+.hero {
+  background: var(--beta-blue);
+  padding: 3rem 2rem;
+  text-align: center;
+  color: var(--beta-dark);
+}
+
+.hero-content {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.hero-content h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.hero-content p {
+  font-size: 1.2rem;
+}
+
+/* ---------------------------
+   UPLOAD SECTION
+---------------------------- */
+.upload-section {
+  background: var(--beta-white);
+  padding: 2rem;
+  text-align: center;
+}
+
+.upload-section h3 {
+  margin-bottom: 1rem;
+  color: var(--beta-dark);
+  font-size: 1.5rem;
+}
+
+#uploadForm {
+  display: inline-block;
+  margin-top: 1rem;
+  text-align: left;
+}
+
+#uploadForm label {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+#pdfFile {
+  margin-bottom: 1rem;
+}
+
+#uploadForm button {
+  background-color: var(--beta-blue);
+  color: var(--beta-dark);
+  padding: 0.5rem 1rem;
+  border: none;
+  cursor: pointer;
+  transition: background-color var(--transition-speed);
+}
+
+#uploadForm button:hover {
+  background-color: #76a7d4; /* Slightly darker blue */
+}
+
+#message {
+  margin-top: 1rem;
+  font-weight: bold;
+  color: green;
+}
+
+/* ---------------------------
+   FOOTER
+---------------------------- */
+footer {
+  margin-top: auto;
+  background: var(--beta-pink);
+  text-align: center;
+  padding: 1rem;
+}
+
+footer p {
+  color: var(--beta-dark);
+}
