@@ -1,6 +1,12 @@
 import PyPDF2 as pdf
 import openai as ai
+from dotenv import load_dotenv
 
+load_dotenv()
+import os
+
+API_KEY = os.getenv('OPENAI_API_KEY')
+DATABASE_PATH = os.getenv('DATABASE_PATH')
 
 def extract_text_from_pdf(pdf_path):
     with open(pdf_path, 'rb') as pdf_file:
