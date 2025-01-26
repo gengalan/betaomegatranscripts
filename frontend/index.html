@@ -28,8 +28,17 @@
     <section class="upload-section">
       <h3>Upload Your Transcript</h3>
       <form id="uploadForm">
+        <!-- PC Number Selection -->
+        <label for="pcNumber">Choose your PC number:</label>
+        <select id="pcNumber" name="pcNumber" required>
+          <option value="" disabled selected>Select PC</option>
+          <!-- Options dynamically added in script.js -->
+        </select>
+        
+        <!-- PDF File Upload -->
         <label for="pdfFile">Choose a PDF file:</label>
         <input type="file" id="pdfFile" name="pdfFile" accept="application/pdf" required />
+        
         <button type="submit">Upload</button>
       </form>
       <div id="message"></div>

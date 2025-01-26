@@ -1,25 +1,39 @@
-// script.js
 document.addEventListener("DOMContentLoaded", function () {
   const uploadForm = document.getElementById("uploadForm");
   const pdfInput = document.getElementById("pdfFile");
+  const pcDropdown = document.getElementById("pcNumber");
   const messageDiv = document.getElementById("message");
+
+  // Populate the PC dropdown dynamically
+  for (let i = 0; i <= 99; i++) {
+    const option = document.createElement("option");
+    option.value = i.toString().padStart(2, "0"); // Format numbers as 00, 01, etc.
+    option.textContent = `PC ${i.toString().padStart(2, "0")}`;
+    pcDropdown.appendChild(option);
+  }
 
   uploadForm.addEventListener("submit", function (event) {
     event.preventDefault();
 
-    // Basic validation: check if PDF is selected
+    // Validate that both PC number and PDF are selected
+    if (!pcDropdown.value) {
+      messageDiv.style.color = "red";
+      messageDiv.textContent = "Please select your PC number.";
+      return;
+    }
+
     if (!pdfInput.value) {
       messageDiv.style.color = "red";
       messageDiv.textContent = "Please choose a PDF file.";
       return;
     }
 
-    // For demonstration purposes, just show a success message
-    // In a real scenario, you'd send the file to a server here
+    // Success message (simulate file upload)
     messageDiv.style.color = "green";
-    messageDiv.textContent = "Transcript PDF successfully uploaded!";
-    
+    messageDiv.textContent = `Transcript for PC ${pcDropdown.value} successfully uploaded!`;
+
     // Clear the form
+    pcDropdown.value = "";
     pdfInput.value = "";
   });
 });
