@@ -44,27 +44,25 @@ header {
 
 .navbar {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  max-width: 1200px;
-  margin: 0 auto;
+  align-items: center; /* Aligns items vertically */
   padding: 0 1rem;
 }
 
 .logo {
   display: flex;
-  align-items: center;
+  align-items: center; /* Vertically align logo and title */
+  gap: 10px; /* Adds space between logo and title */
 }
 
 .logo img {
   max-height: 50px;
-  margin-right: 15px;
 }
 
 .logo h1 {
-  font-size: 1.8rem;
+  font-size: 1.5rem;
   color: var(--beta-dark);
   font-weight: bold;
+  margin: 0;
 }
 
 /* ---------------------------
@@ -72,7 +70,7 @@ header {
 ---------------------------- */
 .hero {
   background: linear-gradient(135deg, var(--beta-blue), var(--beta-pink));
-  padding: 4rem 2rem;
+  padding: 3rem 2rem;
   text-align: center;
   color: var(--beta-dark);
   box-shadow: inset 0 0 10px var(--shadow-color);
@@ -84,15 +82,9 @@ header {
 }
 
 .hero-content h2 {
-  font-size: 2.5rem;
-  margin-bottom: 1rem;
+  font-size: 4rem; /* Large font size for Greek symbols */
   font-weight: bold;
-}
-
-.hero-content p {
-  font-size: 1.2rem;
   color: var(--beta-dark);
-  opacity: 0.9;
 }
 
 /* ---------------------------
