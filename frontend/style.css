@@ -10,15 +10,14 @@
 
 /* ---------------------------
    ROOT VARIABLES
-   (Feel free to tweak these 
-   colors to match Beta Theta Pi's 
-   pink & blue theme more precisely)
 ---------------------------- */
 :root {
-  --beta-blue: #9ec4e6;   /* Light/pastel blue */
-  --beta-pink: #f4c2c2;   /* Light/pastel pink */
-  --beta-dark: #2b2b2b;
-  --beta-white: #ffffff;
+  --beta-blue: #9ec4e6;   /* Light pastel blue */
+  --beta-pink: #f4c2c2;   /* Light pastel pink */
+  --beta-dark: #2b2b2b;   /* Dark gray */
+  --beta-white: #ffffff;  /* White */
+  --beta-gray: #f9f9f9;   /* Light gray */
+  --shadow-color: rgba(0, 0, 0, 0.1); /* Shadow effect */
   --transition-speed: 0.3s;
 }
 
@@ -26,7 +25,7 @@
    BODY
 ---------------------------- */
 body {
-  background: var(--beta-white);
+  background: var(--beta-gray);
   color: var(--beta-dark);
   line-height: 1.6;
   display: flex;
@@ -39,13 +38,17 @@ body {
 ---------------------------- */
 header {
   background: var(--beta-pink);
+  box-shadow: 0px 2px 5px var(--shadow-color);
+  padding: 1rem 0;
 }
 
 .navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
 }
 
 .logo {
@@ -59,18 +62,20 @@ header {
 }
 
 .logo h1 {
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   color: var(--beta-dark);
+  font-weight: bold;
 }
 
 /* ---------------------------
    HERO SECTION
 ---------------------------- */
 .hero {
-  background: var(--beta-blue);
-  padding: 3rem 2rem;
+  background: linear-gradient(135deg, var(--beta-blue), var(--beta-pink));
+  padding: 4rem 2rem;
   text-align: center;
   color: var(--beta-dark);
+  box-shadow: inset 0 0 10px var(--shadow-color);
 }
 
 .hero-content {
@@ -79,12 +84,15 @@ header {
 }
 
 .hero-content h2 {
-  font-size: 2rem;
+  font-size: 2.5rem;
   margin-bottom: 1rem;
+  font-weight: bold;
 }
 
 .hero-content p {
   font-size: 1.2rem;
+  color: var(--beta-dark);
+  opacity: 0.9;
 }
 
 /* ---------------------------
@@ -92,48 +100,72 @@ header {
 ---------------------------- */
 .upload-section {
   background: var(--beta-white);
-  padding: 2rem;
+  padding: 3rem 2rem;
+  margin: 2rem auto;
+  max-width: 600px;
   text-align: center;
+  border-radius: 8px;
+  box-shadow: 0px 4px 8px var(--shadow-color);
 }
 
 .upload-section h3 {
   margin-bottom: 1rem;
   color: var(--beta-dark);
-  font-size: 1.5rem;
+  font-size: 1.8rem;
+  font-weight: bold;
 }
 
 #uploadForm {
-  display: inline-block;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   margin-top: 1rem;
-  text-align: left;
 }
 
 #uploadForm label {
-  display: block;
+  font-size: 1rem;
+  color: var(--beta-dark);
   margin-bottom: 0.5rem;
+  align-self: flex-start;
 }
 
-#pdfFile {
+#pdfFile, #pcNumber {
+  width: 100%;
+  padding: 0.8rem;
   margin-bottom: 1rem;
+  border: 1px solid var(--beta-dark);
+  border-radius: 6px;
+  font-size: 1rem;
+  background: var(--beta-gray);
+  transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
+}
+
+#pdfFile:focus, #pcNumber:focus {
+  outline: none;
+  border-color: var(--beta-blue);
+  box-shadow: 0 0 5px var(--beta-blue);
 }
 
 #uploadForm button {
   background-color: var(--beta-blue);
-  color: var(--beta-dark);
-  padding: 0.5rem 1rem;
+  color: var(--beta-white);
+  padding: 0.8rem 1.5rem;
   border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: bold;
   cursor: pointer;
-  transition: background-color var(--transition-speed);
+  transition: background-color var(--transition-speed), box-shadow var(--transition-speed);
 }
 
 #uploadForm button:hover {
   background-color: #76a7d4; /* Slightly darker blue */
+  box-shadow: 0px 4px 8px var(--shadow-color);
 }
 
 #message {
   margin-top: 1rem;
   font-weight: bold;
-  color: green;
 }
 
 /* ---------------------------
@@ -143,19 +175,29 @@ footer {
   margin-top: auto;
   background: var(--beta-pink);
   text-align: center;
-  padding: 1rem;
+  padding: 1rem 0;
+  box-shadow: 0px -2px 5px var(--shadow-color);
 }
 
 footer p {
   color: var(--beta-dark);
+  font-size: 0.9rem;
 }
 
-/* PC Number Dropdown */
+/* ---------------------------
+   PC NUMBER DROPDOWN
+---------------------------- */
 #pcNumber {
-  width: 100%;
-  padding: 0.5rem;
-  margin-bottom: 1rem;
+  background: var(--beta-gray);
   border: 1px solid var(--beta-dark);
-  border-radius: 4px;
+  border-radius: 6px;
+  padding: 0.8rem;
   font-size: 1rem;
+  width: 100%;
+  transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
+}
+
+#pcNumber:focus {
+  border-color: var(--beta-blue);
+  box-shadow: 0px 0px 5px var(--beta-blue);
 }
