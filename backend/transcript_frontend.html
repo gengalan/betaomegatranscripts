@@ -31,32 +31,76 @@
         .course-table {
             margin-top: 10px;
         }
+        .nav-tabs {
+            margin-bottom: 1rem;
+        }
+        #studentSearch {
+            max-width: 400px;
+            margin: 0 auto 1.5rem auto;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <h1 class="mb-4">Academic Transcript Parser</h1>
+                <h1 class="mb-4 text-center">Academic Transcript Parser</h1>
                 
-                <div class="card">
-                    <div class="card-header">
-                        <h5>Upload Transcript</h5>
+                <ul class="nav nav-tabs" id="mainTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="upload-tab" data-bs-toggle="tab" data-bs-target="#uploadTab" type="button" role="tab" aria-controls="uploadTab" aria-selected="true">Upload Transcript</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="search-tab" data-bs-toggle="tab" data-bs-target="#searchTab" type="button" role="tab" aria-controls="searchTab" aria-selected="false">Search Student</button>
+                    </li>
+                </ul>
+                
+                <div class="tab-content" id="mainTabsContent">
+                    <!-- Upload Tab -->
+                    <div class="tab-pane fade show active" id="uploadTab" role="tabpanel" aria-labelledby="upload-tab">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>Upload Transcript</h5>
+                            </div>
+                            <div class="card-body">
+                                <div id="notifications"></div>
+                                <form id="uploadForm">
+                                    <div class="mb-3">
+                                        <label for="transcriptFile" class="form-label">Select PDF transcript file:</label>
+                                        <input class="form-control" type="file" id="transcriptFile" accept=".pdf" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Upload and Parse</button>
+                                </form>
+                                <div id="loading" class="loading">
+                                    <div class="spinner-border text-primary" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                    <p>Parsing transcript...</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="card-body">
-                        <div id="notifications"></div>
-                        <form id="uploadForm">
-                            <div class="mb-3">
-                                <label for="transcriptFile" class="form-label">Select PDF transcript file:</label>
-                                <input class="form-control" type="file" id="transcriptFile" accept=".pdf" required>
+                    
+                    <!-- Search Tab -->
+                    <div class="tab-pane fade" id="searchTab" role="tabpanel" aria-labelledby="search-tab">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>Search Student</h5>
                             </div>
-                            <button type="submit" class="btn btn-primary">Upload and Parse</button>
-                        </form>
-                        <div id="loading" class="loading">
-                            <div class="spinner-border text-primary" role="status">
-                                <span class="visually-hidden">Loading...</span>
+                            <div class="card-body">
+                                <form id="studentSearch" class="mb-4">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="studentIdInput" placeholder="Enter Student ID" required>
+                                        <button class="btn btn-primary" type="submit">Search</button>
+                                    </div>
+                                </form>
+                                <div id="searchLoading" class="loading">
+                                    <div class="spinner-border text-primary" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                    <p>Fetching student data...</p>
+                                </div>
                             </div>
-                            <p>Parsing transcript...</p>
                         </div>
                     </div>
                 </div>
@@ -65,7 +109,10 @@
                     <div class="card">
                         <div class="card-header d-flex justify-content-between">
                             <h5>Student Information</h5>
-                            <button class="btn btn-sm btn-outline-secondary" id="backButton">Upload Another</button>
+                            <div>
+                                <button class="btn btn-sm btn-outline-secondary me-2" id="viewAllQuartersBtn">View All Quarters</button>
+                                <button class="btn btn-sm btn-outline-secondary" id="backButton">Back</button>
+                            </div>
                         </div>
                         <div class="card-body">
                             <div class="row">
@@ -81,21 +128,35 @@
                         </div>
                     </div>
                     
-                    <h3 class="mt-4 mb-3">Academic Quarters</h3>
-                    <div id="quartersContainer"></div>
+                    <div id="quartersContent">
+                        <h3 class="mt-4 mb-3">Latest Quarter</h3>
+                        <div id="latestQuarterContainer"></div>
+                    </div>
+                    
+                    <div id="allQuartersContent" style="display: none;">
+                        <h3 class="mt-4 mb-3">All Academic Quarters</h3>
+                        <div id="quartersContainer"></div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const uploadForm = document.getElementById('uploadForm');
             const loading = document.getElementById('loading');
+            const searchLoading = document.getElementById('searchLoading');
             const results = document.getElementById('results');
             const backButton = document.getElementById('backButton');
+            const viewAllQuartersBtn = document.getElementById('viewAllQuartersBtn');
+            const studentSearch = document.getElementById('studentSearch');
+            const allQuartersContent = document.getElementById('allQuartersContent');
+            const quartersContent = document.getElementById('quartersContent');
+            const API_URL = 'http://localhost:8000';
             
-            // Handle form submission
+            // Handle form submission for transcript upload
             uploadForm.addEventListener('submit', function(e) {
                 e.preventDefault();
                 
@@ -123,7 +184,7 @@
                 formData.append('file', file);
                 
                 // Upload transcript
-                fetch('http://localhost:8000/upload-transcript/', {
+                fetch(`${API_URL}/upload-transcript/`, {
                     method: 'POST',
                     body: formData
                 })
@@ -144,20 +205,23 @@
                         notification.textContent = `Updated existing record for student ${data.student_id}.`;
                         document.getElementById('notifications').appendChild(notification);
                     }
-                })
-                .then(data => {
+                    
                     // Hide loading and show results
                     loading.style.display = 'none';
                     results.style.display = 'block';
                     
                     // Display student information
-                    document.getElementById('studentName').textContent = data.name;
-                    document.getElementById('studentId').textContent = data.student_id;
-                    document.getElementById('cumulativeGpa').textContent = data.cumulative_gpa.toFixed(2);
-                    document.getElementById('totalCredits').textContent = data.total_credits.toFixed(1);
+                    displayStudentInfo(data);
                     
-                    // Display quarters
-                    displayQuarters(data.quarters);
+                    // Display latest quarter if available
+                    if (data.most_recent_quarter) {
+                        displayLatestQuarter(data.most_recent_quarter);
+                    }
+                    
+                    // Reset and hide all quarters view
+                    document.getElementById('quartersContainer').innerHTML = '';
+                    allQuartersContent.style.display = 'none';
+                    quartersContent.style.display = 'block';
                 })
                 .catch(error => {
                     console.error('Error:', error);
@@ -167,134 +231,339 @@
                 });
             });
             
+            // Handle student search
+            studentSearch.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const studentId = document.getElementById('studentIdInput').value.trim();
+                if (!studentId) {
+                    alert('Please enter a student ID');
+                    return;
+                }
+                
+                // Show loading indicator
+                searchLoading.style.display = 'block';
+                
+                // Fetch student data
+                fetch(`${API_URL}/students/${studentId}`)
+                .then(response => {
+                    if (!response.ok) {
+                        if (response.status === 404) {
+                            throw new Error('Student not found');
+                        }
+                        throw new Error('Failed to retrieve student data');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Hide loading and show results
+                    searchLoading.style.display = 'none';
+                    results.style.display = 'block';
+                    
+                    // Display student information
+                    displayStudentInfo(data);
+                    
+                    // Display latest quarter if available
+                    if (data.most_recent_quarter) {
+                        displayLatestQuarter(data.most_recent_quarter);
+                    }
+                    
+                    // Reset and hide all quarters view
+                    document.getElementById('quartersContainer').innerHTML = '';
+                    allQuartersContent.style.display = 'none';
+                    quartersContent.style.display = 'block';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    searchLoading.style.display = 'none';
+                    alert('Error: ' + error.message);
+                });
+            });
+            
+            viewAllQuartersBtn.addEventListener('click', function() {
+                const studentId = document.getElementById('studentId').textContent;
+                if (!studentId) return;
+                
+                if (allQuartersContent.style.display === 'block') {
+                    allQuartersContent.style.display = 'none';
+                    quartersContent.style.display = 'block';
+                    viewAllQuartersBtn.textContent = 'View All Quarters';
+                } else {
+                    document.getElementById('quartersContainer').innerHTML = `
+                        <div class="text-center my-4">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p>Loading all quarters...</p>
+                        </div>
+                    `;
+                    
+                    allQuartersContent.style.display = 'block';
+                    quartersContent.style.display = 'none';
+                    viewAllQuartersBtn.textContent = 'Show Latest Quarter';
+
+                    fetch(`${API_URL}/student-quarters/${studentId}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            if (response.status === 404) {
+                                throw new Error('No quarters found for this student');
+                            }
+                            throw new Error('Failed to retrieve quarters data');
+                        }
+                        return response.json();
+                    })
+                    .then(quarters => {
+                        displayQuarters(quarters);
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        document.getElementById('quartersContainer').innerHTML = `
+                            <div class="alert alert-danger">
+                                ${error.message}
+                            </div>
+                        `;
+                    });
+                }
+            });
+            
             // Back button
             backButton.addEventListener('click', function() {
                 results.style.display = 'none';
                 uploadForm.style.display = 'block';
+                searchLoading.style.display = 'none';
                 document.getElementById('transcriptFile').value = '';
+                document.getElementById('studentIdInput').value = '';
                 document.getElementById('quartersContainer').innerHTML = '';
+                document.getElementById('latestQuarterContainer').innerHTML = '';
                 document.getElementById('notifications').innerHTML = '';
+                
+                // Switch back to the appropriate tab
+                const activeTab = document.querySelector('.nav-link.active');
+                if (activeTab.id === 'search-tab') {
+                    document.getElementById('searchTab').classList.add('show', 'active');
+                } else {
+                    document.getElementById('uploadTab').classList.add('show', 'active');
+                }
+                
+                allQuartersContent.style.display = 'none';
+                quartersContent.style.display = 'block';
+                viewAllQuartersBtn.textContent = 'View All Quarters';
             });
+            
+            // Function to display student information
+            function displayStudentInfo(data) {
+                document.getElementById('studentName').textContent = data.name;
+                document.getElementById('studentId').textContent = data.student_id;
+                document.getElementById('cumulativeGpa').textContent = data.cumulative_gpa.toFixed(2);
+                document.getElementById('totalCredits').textContent = data.total_credits.toFixed(1);
+            }
+            
+            // Function to display latest quarter
+            function displayLatestQuarter(quarter) {
+                const container = document.getElementById('latestQuarterContainer');
+                container.innerHTML = '';
+                
+                // Handle different quarter object structures
+                const quarterToDisplay = normalizeQuarter(quarter);
+                const quarterDiv = createQuarterElement(quarterToDisplay);
+                container.appendChild(quarterDiv);
+            }
+            
+            // Function to normalize quarter data structure
+            function normalizeQuarter(quarter) {
+                // Create a copy to avoid modifying the original
+                const normalized = { ...quarter };
+                
+                // Fix any property issues
+                if (typeof normalized.quarter_gpa !== 'number') {
+                    normalized.quarter_gpa = parseFloat(normalized.quarter_gpa || 0);
+                }
+                
+                if (typeof normalized.quarter_credits !== 'number') {
+                    normalized.quarter_credits = parseFloat(normalized.quarter_credits || 0);
+                }
+                
+                // Default deans_list to false if undefined
+                if (normalized.deans_list === undefined) {
+                    normalized.deans_list = false;
+                }
+                
+                // Ensure courses is an array
+                if (!Array.isArray(normalized.courses)) {
+                    normalized.courses = [];
+                }
+                
+                // Normalize each course
+                normalized.courses = normalized.courses.map(course => {
+                    const normalizedCourse = { ...course };
+                    
+                    // Convert credits to number if it's a string
+                    if (typeof normalizedCourse.credits === 'string') {
+                        normalizedCourse.credits = parseFloat(normalizedCourse.credits || 0);
+                    }
+                    
+                    return normalizedCourse;
+                });
+                
+                return normalized;
+            }
             
             // Function to display quarters
             function displayQuarters(quarters) {
                 const container = document.getElementById('quartersContainer');
                 container.innerHTML = '';
                 
-                // Sort quarters chronologically
+                if (!quarters || quarters.length === 0) {
+                    container.innerHTML = '<div class="alert alert-info">No quarters available for this student.</div>';
+                    return;
+                }
+                
+                // Sort quarters chronologically - convert quarter_year to number for comparison
                 quarters.sort((a, b) => {
-                    if (a.quarter_year !== b.quarter_year) {
-                        return a.quarter_year - b.quarter_year;
+                    const yearA = typeof a.quarter_year === 'string' ? parseInt(a.quarter_year) : a.quarter_year;
+                    const yearB = typeof b.quarter_year === 'string' ? parseInt(b.quarter_year) : b.quarter_year;
+                    
+                    if (yearA !== yearB) {
+                        return yearB - yearA; // Most recent years first
                     }
                     
-                    const quarterOrder = { 'AUTUMN': 1, 'WINTER': 2, 'SPRING': 3, 'SUMMER': 4 };
-                    return quarterOrder[a.quarter_name] - quarterOrder[b.quarter_name];
+                    const quarterOrder = { 'AUTUMN': 4, 'WINTER': 1, 'SPRING': 2, 'SUMMER': 3 };
+                    return quarterOrder[b.quarter_name] - quarterOrder[a.quarter_name];
                 });
                 
                 quarters.forEach(quarter => {
-                    const quarterDiv = document.createElement('div');
-                    quarterDiv.className = 'card mb-4';
-                    
-                    // Quarter header
-                    const header = document.createElement('div');
-                    header.className = 'card-header';
-                    
-                    const title = document.createElement('h5');
-                    title.textContent = `${quarter.quarter_name} ${quarter.quarter_year}`;
-                    
-                    if (quarter.grade === 'IN_PROGRESS') {
-                        const badge = document.createElement('span');
-                        badge.className = 'badge bg-warning ms-2';
-                        badge.textContent = 'In Progress';
-                        title.appendChild(badge);
-                    }
-                    
-                    header.appendChild(title);
-                    quarterDiv.appendChild(header);
-                    
-                    // Quarter body
-                    const body = document.createElement('div');
-                    body.className = 'card-body';
-                    
-                    // Quarter summary
-                    const summary = document.createElement('div');
-                    summary.className = 'quarter-header d-flex justify-content-between';
-                    
-                    const leftInfo = document.createElement('div');
-                    leftInfo.innerHTML = `<strong>Credits:</strong> ${quarter.quarter_credits.toFixed(1)}`;
-                    
-                    const rightInfo = document.createElement('div');
-                    if (quarter.grade !== 'IN_PROGRESS') {
-                        rightInfo.innerHTML = `<strong>GPA:</strong> ${quarter.quarter_gpa.toFixed(2)}`;
-                        
-                        if (quarter.deans_list) {
-                            const deansList = document.createElement('span');
-                            deansList.className = 'deans-list ms-3';
-                            deansList.innerHTML = '🏆 Dean\'s List';
-                            rightInfo.appendChild(deansList);
-                        }
-                    } else {
-                        rightInfo.innerHTML = '<em>Quarter in progress</em>';
-                    }
-                    
-                    summary.appendChild(leftInfo);
-                    summary.appendChild(rightInfo);
-                    body.appendChild(summary);
-                    
-                    // Course table
-                    if (quarter.courses && quarter.courses.length > 0) {
-                        const table = document.createElement('table');
-                        table.className = 'table table-hover course-table';
-                        
-                        // Table header
-                        const thead = document.createElement('thead');
-                        thead.innerHTML = `
-                            <tr>
-                                <th>Course</th>
-                                <th>Title</th>
-                                <th>Credits</th>
-                                <th>Grade</th>
-                            </tr>
-                        `;
-                        table.appendChild(thead);
-                        
-                        // Table body
-                        const tbody = document.createElement('tbody');
-                        quarter.courses.forEach(course => {
-                            const tr = document.createElement('tr');
-                            
-                            const courseCode = document.createElement('td');
-                            courseCode.textContent = `${course.dept_code} ${course.course_number}`;
-                            
-                            const courseTitle = document.createElement('td');
-                            courseTitle.textContent = course.course_name;
-                            
-                            const credits = document.createElement('td');
-                            credits.textContent = course.credits.toFixed(1);
-                            
-                            const grade = document.createElement('td');
-                            grade.textContent = course.grade === 'IN_PROGRESS' ? 'In Progress' : course.grade;
-                            
-                            tr.appendChild(courseCode);
-                            tr.appendChild(courseTitle);
-                            tr.appendChild(credits);
-                            tr.appendChild(grade);
-                            
-                            tbody.appendChild(tr);
-                        });
-                        
-                        table.appendChild(tbody);
-                        body.appendChild(table);
-                    } else {
-                        const noCourses = document.createElement('p');
-                        noCourses.className = 'text-muted';
-                        noCourses.textContent = 'No courses found for this quarter.';
-                        body.appendChild(noCourses);
-                    }
-                    
-                    quarterDiv.appendChild(body);
+                    const normalizedQuarter = normalizeQuarter(quarter);
+                    const quarterDiv = createQuarterElement(normalizedQuarter);
                     container.appendChild(quarterDiv);
                 });
+            }
+            
+            // Helper function to create a quarter element
+            function createQuarterElement(quarter) {
+                const quarterDiv = document.createElement('div');
+                quarterDiv.className = 'card mb-4';
+                
+                // Quarter header
+                const header = document.createElement('div');
+                header.className = 'card-header';
+                
+                const title = document.createElement('h5');
+                title.textContent = `${quarter.quarter_name} ${quarter.quarter_year}`;
+                
+                // If quarter level is available, add it
+                if (quarter.quarter_level) {
+                    title.textContent += ` (${quarter.quarter_level})`;
+                }
+                
+                // Check for in-progress status
+                const inProgress = quarter.courses && quarter.courses.some(c => c.grade === 'IN_PROGRESS');
+                if (inProgress) {
+                    const badge = document.createElement('span');
+                    badge.className = 'badge bg-warning ms-2';
+                    badge.textContent = 'In Progress';
+                    title.appendChild(badge);
+                }
+                
+                header.appendChild(title);
+                quarterDiv.appendChild(header);
+                
+                // Quarter body
+                const body = document.createElement('div');
+                body.className = 'card-body';
+                
+                // Quarter summary
+                const summary = document.createElement('div');
+                summary.className = 'quarter-header d-flex justify-content-between';
+                
+                const leftInfo = document.createElement('div');
+                leftInfo.innerHTML = `<strong>Credits:</strong> ${parseFloat(quarter.quarter_credits).toFixed(1)}`;
+                
+                const rightInfo = document.createElement('div');
+                if (!inProgress) {
+                    rightInfo.innerHTML = `<strong>GPA:</strong> ${parseFloat(quarter.quarter_gpa).toFixed(2)}`;
+                    
+                    // Add cumulative GPA if available
+                    if (quarter.cumulative_gpa) {
+                        rightInfo.innerHTML += ` <span class="text-muted">(Cum. GPA: ${parseFloat(quarter.cumulative_gpa).toFixed(2)})</span>`;
+                    }
+                    
+                    if (quarter.deans_list) {
+                        const deansList = document.createElement('span');
+                        deansList.className = 'deans-list ms-3';
+                        deansList.innerHTML = '🏆 Dean\'s List';
+                        rightInfo.appendChild(deansList);
+                    }
+                } else {
+                    rightInfo.innerHTML = '<em>Quarter in progress</em>';
+                }
+                
+                summary.appendChild(leftInfo);
+                summary.appendChild(rightInfo);
+                body.appendChild(summary);
+                
+                // Course table
+                if (quarter.courses && quarter.courses.length > 0) {
+                    const table = document.createElement('table');
+                    table.className = 'table table-hover course-table';
+                    
+                    // Table header
+                    const thead = document.createElement('thead');
+                    thead.innerHTML = `
+                        <tr>
+                            <th>Course</th>
+                            <th>Title</th>
+                            <th>Credits</th>
+                            <th>Grade</th>
+                        </tr>
+                    `;
+                    table.appendChild(thead);
+                    
+                    // Table body
+                    const tbody = document.createElement('tbody');
+                    quarter.courses.forEach(course => {
+                        const tr = document.createElement('tr');
+                        
+                        const courseCode = document.createElement('td');
+                        courseCode.textContent = `${course.dept_code} ${course.course_number}`;
+                        
+                        const courseTitle = document.createElement('td');
+                        courseTitle.textContent = course.course_name;
+                        
+                        const credits = document.createElement('td');
+                        credits.textContent = parseFloat(course.credits).toFixed(1);
+                        
+                        const grade = document.createElement('td');
+                        if (course.grade === 'IN_PROGRESS') {
+                            grade.textContent = 'In Progress';
+                        } else {
+                            // Check if the grade is a number (GPA score) or a letter grade
+                            const numericGrade = parseFloat(course.grade);
+                            if (!isNaN(numericGrade)) {
+                                grade.textContent = numericGrade.toFixed(1);
+                            } else {
+                                grade.textContent = course.grade;
+                            }
+                        }
+                        
+                        tr.appendChild(courseCode);
+                        tr.appendChild(courseTitle);
+                        tr.appendChild(credits);
+                        tr.appendChild(grade);
+                        
+                        tbody.appendChild(tr);
+                    });
+                    
+                    table.appendChild(tbody);
+                    body.appendChild(table);
+                } else {
+                    const noCourses = document.createElement('p');
+                    noCourses.className = 'text-muted';
+                    noCourses.textContent = 'No courses found for this quarter.';
+                    body.appendChild(noCourses);
+                }
+                
+                quarterDiv.appendChild(body);
+                return quarterDiv;
             }
         });
     </script>
