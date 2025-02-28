@@ -32,8 +32,29 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     const formData = new FormData();
-    formData.append("pcNumber", pcDropdown.value);
-    formData.append("pdfFile", pdfInput.files[0]);
+formData.append("pcNumber", pcDropdown.value);
+formData.append("pdfFile", pdfInput.files[0]);
+
+// TODO: Need to host this somewhere
+fetch('http://localhost:8000/upload-transcript/', {
+    method: 'POST',
+    body: pdfInput.files[0],
+    headers: {
+        'Content-Type': 'application/pdf',
+    }
+})
+.then(response => {
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    }
+    return response.json();
+})
+.then(data => {
+    console.log('Success:', data);
+})
+.catch(error => {
+    console.error('Error:', error);
+});
 
     // Upload to S3:
     // 1. Create a presigned URL from the server
