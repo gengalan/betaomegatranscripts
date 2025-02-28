@@ -1,7 +1,7 @@
 # Beta Omega Transcripts
 
 A simple front-end website themed around Beta Theta Pi colors and imagery.  
-**Functionality**: Currently, you can upload a PDF transcript.  
+**Functionality**: Currently, you can upload a PDF transcript to backend, parse transcript, upload to sqlite database, and retrieve information from database.
 
 ## Folder Structure
 
@@ -18,7 +18,8 @@ A simple front-end website themed around Beta Theta Pi colors and imagery.
 
 ## Future Improvements
 
-- Add a back-end to store and process PDF files.  
+- [x] Add a back-end to store and process PDF files.
+- Determine where to host FastAPI server on
 - Create a user login system if privacy/security is needed.  
 
 ## Disclaimer
