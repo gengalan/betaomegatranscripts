@@ -3,4 +3,4 @@
 venv/
 *.DS_Store
 .venv/
-transcripts.db
+*.db
