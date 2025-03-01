@@ -25,7 +25,7 @@ def parse_transcript(pdf_path):
             # Extract name
             if len(text_blocks) >= 6:
                 name_text = text_blocks[4]
-                name_match = re.match(r'^([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)\s+Engineering', name_text)
+                name_match = re.match(r'^([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)\s+', name_text)
                 name = name_match.group(1) if name_match else "Unknown"
             else:
                 name = "Unknown"
